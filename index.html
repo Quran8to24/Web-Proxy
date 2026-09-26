@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f2f1e9" />
+    <meta name="description" content="Overpass is a local browser-based web proxy powered by Scramjet." />
+    <title>Overpass | Web Proxy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        color-scheme: light;
+        --paper: #f2f1e9;
+        --ink: #18221e;
+        --muted: #65716b;
+        --line: #d5d9cf;
+        --green: #205b46;
+        --green-dark: #153f31;
+        --lime: #d8ed72;
+        --orange: #bd573c;
+        --mono: "DM Mono", monospace;
+        --sans: "Manrope", sans-serif;
+      }
+
+      * { box-sizing: border-box; }
+
+      html { min-width: 320px; background: var(--paper); }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        color: var(--ink);
+        font-family: var(--sans);
+        background-image: radial-gradient(#bfc6ba 0.65px, transparent 0.65px);
+        background-size: 14px 14px;
+      }
+
+      a { color: inherit; }
+
+      .site-header,
+      main,
+      .site-footer {
+        width: min(1120px, calc(100% - 64px));
+        margin-inline: auto;
+      }
+
+      .site-header {
+        display: flex;
+        min-height: 76px;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .wordmark {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 15px;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 29px;
+        height: 29px;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--green);
+        color: var(--lime);
+        font-family: Georgia, serif;
+        font-size: 19px;
+      }
+
+      .header-meta,
+      .eyebrow,
+      .section-index,
+      .step-number,
+      .site-footer {
+        font-family: var(--mono);
+        font-size: 11px;
+      }
+
+      .header-meta {
+        display: flex;
+        align-items: center;
+        gap: 26px;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+
+      .header-meta a { text-decoration-thickness: 1px; text-underline-offset: 4px; }
+
+      .hero {
+        position: relative;
+        padding: 82px 0 64px;
+      }
+
+      .hero::before {
+        position: absolute;
+        z-index: -1;
+        top: 64px;
+        right: 9%;
+        width: 180px;
+        height: 180px;
+        border: 1px solid #c2cbb7;
+        border-radius: 50%;
+        content: "";
+      }
+
+      .hero::after {
+        position: absolute;
+        z-index: -1;
+        top: 99px;
+        right: calc(9% + 35px);
+        width: 110px;
+        height: 110px;
+        border: 1px solid #c2cbb7;
+        border-radius: 50%;
+        content: "";
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        margin: 0 0 20px;
+        color: var(--green);
+        text-transform: uppercase;
+      }
+
+      .eyebrow::before {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--orange);
+        content: "";
+      }
+
+      h1 {
+        max-width: 760px;
+        margin: 0;
+        font-size: 84px;
+        font-weight: 700;
+        line-height: 0.98;
+      }
+
+      .hero-copy {
+        max-width: 510px;
+        margin: 24px 0 28px;
+        color: #4d5b54;
+        font-size: 17px;
+        line-height: 1.7;
+      }
+
+      .primary-link {
+        display: inline-flex;
+        min-height: 49px;
+        align-items: center;
+        gap: 30px;
+        padding: 0 17px;
+        background: var(--green);
+        color: white;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: background-color 140ms ease, transform 140ms ease;
+      }
+
+      .primary-link:hover { background: var(--green-dark); transform: translateY(-2px); }
+      .primary-link:focus-visible, a:focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; }
+
+      .launch-note {
+        margin: 13px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .launch-note code,
+      .command code {
+        font-family: var(--mono);
+        font-size: 0.95em;
+      }
+
+      .facts {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        border-block: 1px solid var(--line);
+      }
+
+      .fact {
+        min-height: 92px;
+        padding: 19px 22px 17px 0;
+      }
+
+      .fact + .fact { padding-left: 24px; border-left: 1px solid var(--line); }
+
+      .fact-label {
+        display: block;
+        margin-bottom: 9px;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 10px;
+        text-transform: uppercase;
+      }
+
+      .fact strong { font-size: 14px; font-weight: 700; }
+
+      .setup {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 70px;
+        padding: 61px 0 70px;
+      }
+
+      .section-index { margin: 4px 0 12px; color: var(--orange); }
+
+      h2 {
+        max-width: 360px;
+        margin: 0;
+        font-size: 31px;
+        line-height: 1.2;
+      }
+
+      .setup-copy {
+        max-width: 380px;
+        margin: 14px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.75;
+      }
+
+      .steps { border-top: 1px solid var(--line); }
+
+      .step {
+        display: grid;
+        grid-template-columns: 38px 1fr;
+        gap: 12px;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .step-number { padding-top: 2px; color: var(--orange); }
+      .step p { margin: 0; color: #46534c; font-size: 13px; line-height: 1.6; }
+
+      .command {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 22px;
+        margin-top: 11px;
+        padding: 12px 14px;
+        border-left: 2px solid var(--green);
+        background: rgba(255, 255, 255, 0.58);
+        color: var(--green-dark);
+      }
+
+      .site-footer {
+        display: flex;
+        min-height: 54px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+      }
+
+      .site-footer a { text-underline-offset: 3px; }
+
+      @media (max-width: 700px) {
+        .site-header, main, .site-footer { width: min(100% - 36px, 540px); }
+        .site-header { min-height: 64px; }
+        .header-meta { gap: 15px; font-size: 10px; }
+        .hero { padding: 64px 0 47px; }
+        .hero::before { top: 49px; right: 1%; width: 112px; height: 112px; }
+        .hero::after { top: 71px; right: calc(1% + 22px); width: 68px; height: 68px; }
+        h1 { max-width: 450px; font-size: 62px; }
+        .hero-copy { max-width: 420px; font-size: 15px; }
+        .facts { grid-template-columns: 1fr; }
+        .fact { min-height: 0; padding: 15px 0; }
+        .fact + .fact { padding-left: 0; border-top: 1px solid var(--line); border-left: 0; }
+        .fact-label { display: inline-block; min-width: 104px; margin: 0 8px 0 0; }
+        .setup { grid-template-columns: 1fr; gap: 29px; padding: 45px 0 48px; }
+        h2 { font-size: 28px; }
+      }
+
+      @media (max-width: 390px) {
+        .site-header, main, .site-footer { width: calc(100% - 28px); }
+        .header-meta { gap: 10px; font-size: 9px; }
+        h1 { font-size: 54px; }
+        .site-footer { align-items: flex-start; flex-direction: column; justify-content: center; padding: 12px 0; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="./" aria-label="Overpass home">
+        <span class="brand-mark" aria-hidden="true">O</span>
+        <span>overpass</span>
+      </a>
+      <nav class="header-meta" aria-label="Project links">
+        <span>LOCAL WEB PROXY</span>
+        <a href="https://github.com/Quran8to24/Web-Proxy">Source ↗</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <p class="eyebrow">A small, local browser workspace</p>
+        <h1 id="page-title">Overpass</h1>
+        <p class="hero-copy">A browser-based web proxy powered by Scramjet. Run the engine on your own machine, then open your session in one click.</p>
+        <a class="primary-link" href="http://127.0.0.1:3030/">
+          <span>Open local proxy</span>
+          <span aria-hidden="true">↗</span>
+        </a>
+        <p class="launch-note">The local service needs to be running at <code>127.0.0.1:3030</code>.</p>
+      </section>
+
+      <section class="facts" aria-label="Project details">
+        <div class="fact">
+          <span class="fact-label">Runs on</span>
+          <strong>Your machine</strong>
+        </div>
+        <div class="fact">
+          <span class="fact-label">Powered by</span>
+          <strong>Scramjet</strong>
+        </div>
+        <div class="fact">
+          <span class="fact-label">Works with</span>
+          <strong>YouTube, Shorts, Poki, and more</strong>
+        </div>
+      </section>
+
+      <section class="setup" aria-labelledby="setup-title">
+        <div>
+          <p class="section-index">01 / GET STARTED</p>
+          <h2 id="setup-title">Start your local session.</h2>
+          <p class="setup-copy">GitHub Pages hosts this project page only. The proxy engine runs locally, so your browsing service is not exposed as a public proxy.</p>
+        </div>
+        <div class="steps" aria-label="Setup steps">
+          <div class="step">
+            <span class="step-number">01</span>
+            <div>
+              <p>Install Node.js 20 or newer, then get the project files.</p>
+              <div class="command"><code>git clone https://github.com/Quran8to24/Web-Proxy.git</code></div>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-number">02</span>
+            <div>
+              <p>Install dependencies and start the local server from the project folder.</p>
+              <div class="command"><code>npm install</code><code>npm start</code></div>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-number">03</span>
+            <div><p>Choose “Open local proxy” above to open the browser workspace.</p></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>Scramjet-powered · local by default</span>
+      <a href="https://github.com/Quran8to24/Web-Proxy#readme">Read project notes ↗</a>
+    </footer>
+  </body>
+</html>
