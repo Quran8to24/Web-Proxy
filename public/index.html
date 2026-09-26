@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#f3f2eb" />
+    <title>248000</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/index.css" />
+    <script src="/bootstrap-init.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Overpass home">
+        <span class="brand-mark" aria-hidden="true">O</span>
+        <span>overpass</span>
+      </a>
+      <span class="local-indicator"><span class="live-dot"></span> LOCAL SESSION</span>
+    </header>
+
+    <main class="workspace">
+      <section class="controls" aria-label="Proxy controls">
+        <form id="proxy-form" class="address-row">
+          <label class="address-label" for="proxy-address">GO TO</label>
+          <input id="proxy-address" name="address" type="text" autocomplete="url" spellcheck="false" placeholder="Enter a URL or search Google" aria-label="URL or Google search" />
+          <button class="go-button" type="submit">Go <span aria-hidden="true">↗</span></button>
+        </form>
+      </section>
+
+      <section class="browser" aria-label="Proxied website">
+        <div class="browser-bar">
+          <span class="browser-label">BROWSER</span>
+          <span id="browser-status" class="browser-status" role="status" aria-live="polite">Starting proxy…</span>
+          <button id="clear-session" class="clear-button" type="button" title="Clear this proxy's saved session data">Clear session</button>
+          <a id="open-proxied" class="proxy-tab-link" href="#" target="_blank" rel="noopener noreferrer" hidden>Open proxied in new tab <span aria-hidden="true">↗</span></a>
+          <a id="open-direct" class="direct-link" href="https://www.google.com/" target="_blank" rel="noopener noreferrer">Open directly <span aria-hidden="true">↗</span></a>
+        </div>
+        <div id="frame-wrapper" class="frame-wrapper">
+          <iframe id="proxy-frame" title="Proxied website" allow="accelerometer; autoplay; clipboard-write; encrypted-media; fullscreen; gamepad; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          <div id="error-panel" class="error-panel" hidden>
+            <p class="error-kicker">NAVIGATION FAILED</p>
+            <h1 id="error-title">This page could not be opened.</h1>
+            <p>Some sites limit proxy playback or embedded game controls. Try another destination or open the site directly.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Scramjet-powered browsing</span>
+      <span>Use only on networks where you have permission.</span>
+    </footer>
+    <script src="/index.js"></script>
+  </body>
+</html>
